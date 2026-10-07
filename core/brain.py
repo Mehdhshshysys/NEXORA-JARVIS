@@ -12,8 +12,8 @@ class Brain:
                 "query": command
             }
 
-        # Google
-        if "گوگل" in command or "جستجو" in command:
+        # Google / Search
+        if "گوگل" in command or "جستجو" in command or "سرچ" in command:
             return {
                 "tool": "browser",
                 "action": "google",
@@ -28,7 +28,7 @@ class Brain:
                 "query": command
             }
 
-        # List files
+        # Files
         if "فایل ها" in command or "فایل‌ها" in command:
             return {
                 "tool": "files",
@@ -64,8 +64,9 @@ class Brain:
                 "action": "exit"
             }
 
+        # Unknown command
         return {
             "tool": "unknown",
             "action": "unknown",
             "query": command
-            }
+        }
