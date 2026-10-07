@@ -71,3 +71,10 @@ if "فایل حذف کن" in command or "فایل پاک کن" in command:
             "action": "unknown",
             "query": command
         }
+# Terminal command
+if "اجرا کن" in command or "دستور اجرا کن" in command:
+    return {
+        "tool": "terminal",
+        "action": "run",
+        "query": command
+}
