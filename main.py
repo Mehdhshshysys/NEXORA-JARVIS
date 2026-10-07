@@ -5,12 +5,14 @@ from core.tool_manager import ToolManager
 from tools.browser import BrowserTool
 from tools.system import SystemTool
 
+from memory.memory import Memory
+
 
 def main():
 
     print("================================")
     print("       NEXORA-JARVIS")
-    print("       AI AGENT v0.2")
+    print("       AI AGENT v0.3")
     print("================================")
 
     brain = Brain()
@@ -23,22 +25,28 @@ def main():
     tool_manager.register("browser", browser)
     tool_manager.register("system", system)
 
+    memory = Memory()
+
     agent = Agent(
         brain,
         tool_manager
     )
 
+    print("JARVIS: سیستم آماده است.")
+
     while True:
 
         command = input("\nJARVIS > ")
 
+        if command.lower() in ["خروج", "exit", "quit"]:
+            print("JARVIS: در حال خاموش شدن...")
+            break
+
+        memory.remember("last_command", command)
+
         result = agent.execute(command)
 
         print("JARVIS:", result)
-
-        if result == "EXIT":
-            print("JARVIS shutting down...")
-            break
 
 
 if __name__ == "__main__":
