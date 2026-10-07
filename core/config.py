@@ -1,5 +1,5 @@
 APP_NAME = "NEXORA-JARVIS"
-VERSION = "0.7"
+VERSION = "0.8"
 
 LANGUAGE = "fa"
 
@@ -15,3 +15,11 @@ EXIT_COMMANDS = [
 MAX_COMMAND_LENGTH = 500
 
 TERMINAL_TIMEOUT = 30
+
+VOICE_ENABLED = True
+
+WAKE_WORD = "nexora"
+
+VOICE_READY_MESSAGE = "بله؟"
+
+VOICE_ERROR_MESSAGE = "متأسفانه صدای شما دریافت نشد."
