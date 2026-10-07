@@ -14,7 +14,7 @@ def main():
 
     print("================================")
     print("       NEXORA-JARVIS")
-    print("       AI AGENT v0.5")
+    print("       AI AGENT v0.6")
     print("================================")
 
     # Core
@@ -33,6 +33,7 @@ def main():
     tool_manager.register("system", system)
     tool_manager.register("files", files)
     tool_manager.register("terminal", terminal)
+    tool_manager.register("memory", memory)
 
     # Agent
     agent = Agent(
