@@ -1,9 +1,11 @@
+from core.tool_manager import ToolManager
+
+
 class Agent:
 
-    def __init__(self, brain, browser, system):
+    def __init__(self, brain, tool_manager):
         self.brain = brain
-        self.browser = browser
-        self.system = system
+        self.tool_manager = tool_manager
 
     def execute(self, command):
 
@@ -13,25 +15,20 @@ class Agent:
         action = decision.get("action")
         query = decision.get("query", "")
 
-        if tool == "browser":
+        if tool == "unknown":
+            return "دستور را متوجه نشدم."
 
-            if action == "youtube":
-                self.browser.youtube(query)
-                return "یوتیوب باز شد."
+        if action == "exit":
+            return "EXIT"
 
-            if action == "google":
-                self.browser.google(query)
-                return "گوگل باز شد."
+        if query:
+            return self.tool_manager.run(
+                tool,
+                action,
+                query
+            )
 
-        elif tool == "system":
-
-            if action == "time":
-                return self.system.time()
-
-            if action == "info":
-                return self.system.info()
-
-            if action == "exit":
-                return "EXIT"
-
-        return "دستور را متوجه نشدم."
+        return self.tool_manager.run(
+            tool,
+            action
+        )
