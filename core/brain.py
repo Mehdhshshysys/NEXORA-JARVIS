@@ -2,10 +2,11 @@ class Brain:
 
     def understand(self, command):
 
-        command = command.lower().strip()
+        command = command.strip()
+        text = command.lower()
 
         # YouTube
-        if "یوتیوب" in command:
+        if "یوتیوب" in text:
             return {
                 "tool": "browser",
                 "action": "youtube",
@@ -13,7 +14,11 @@ class Brain:
             }
 
         # Google / Search
-        if "گوگل" in command or "جستجو" in command or "سرچ" in command:
+        if (
+            "گوگل" in text
+            or "جستجو" in text
+            or "سرچ" in text
+        ):
             return {
                 "tool": "browser",
                 "action": "google",
@@ -21,22 +26,49 @@ class Brain:
             }
 
         # Open website
-        if "باز کن" in command and "سایت" in command:
+        if "باز کن" in text and "سایت" in text:
             return {
                 "tool": "browser",
                 "action": "open_site",
                 "query": command
             }
 
+        # Notepad
+        if (
+            "نوت پد" in text
+            or "نوت‌پد" in text
+            or "notepad" in text
+        ):
+            return {
+                "tool": "apps",
+                "action": "open_app",
+                "query": "notepad"
+            }
+
+        # Calculator
+        if (
+            "ماشین حساب" in text
+            or "calculator" in text
+            or "calc" in text
+        ):
+            return {
+                "tool": "apps",
+                "action": "open_app",
+                "query": "calculator"
+            }
+
         # List files
-        if "فایل ها" in command or "فایل‌ها" in command:
+        if "فایل ها" in text or "فایل‌ها" in text:
             return {
                 "tool": "files",
                 "action": "list_files"
             }
 
         # Create file
-        if "فایل بساز" in command or "فایل ایجاد کن" in command:
+        if (
+            "فایل بساز" in text
+            or "فایل ایجاد کن" in text
+        ):
             return {
                 "tool": "files",
                 "action": "create_file",
@@ -44,7 +76,10 @@ class Brain:
             }
 
         # Delete file
-        if "فایل حذف کن" in command or "فایل پاک کن" in command:
+        if (
+            "فایل حذف کن" in text
+            or "فایل پاک کن" in text
+        ):
             return {
                 "tool": "files",
                 "action": "delete_file",
@@ -52,29 +87,38 @@ class Brain:
             }
 
         # Time
-        if "ساعت" in command:
+        if "ساعت" in text:
             return {
                 "tool": "system",
                 "action": "time"
             }
 
         # System information
-        if "سیستم" in command or "مشخصات کامپیوتر" in command:
+        if (
+            "سیستم" in text
+            or "مشخصات کامپیوتر" in text
+        ):
             return {
                 "tool": "system",
                 "action": "info"
             }
 
         # Remember
-        if "یاد بگیر" in command or "یادت باشه" in command:
+        if (
+            "یاد بگیر" in text
+            or "یادت باشه" in text
+        ):
             return {
                 "tool": "memory",
                 "action": "remember",
                 "query": command
             }
 
-        # Terminal command
-        if "اجرا کن" in command or "دستور اجرا کن" in command:
+        # Terminal
+        if (
+            "اجرا کن" in text
+            or "دستور اجرا کن" in text
+        ):
             return {
                 "tool": "terminal",
                 "action": "run",
@@ -82,13 +126,18 @@ class Brain:
             }
 
         # Exit
-        if command in ["خروج", "بستن", "exit", "quit"]:
+        if text in [
+            "خروج",
+            "بستن",
+            "exit",
+            "quit"
+        ]:
             return {
                 "tool": "system",
                 "action": "exit"
             }
 
-        # Unknown command
+        # Unknown
         return {
             "tool": "unknown",
             "action": "unknown",
