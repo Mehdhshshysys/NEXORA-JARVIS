@@ -28,20 +28,27 @@ class Brain:
                 "query": command
             }
 
-        # Files
+        # List files
         if "فایل ها" in command or "فایل‌ها" in command:
             return {
                 "tool": "files",
                 "action": "list_files"
             }
 
+        # Create file
+        if "فایل بساز" in command or "فایل ایجاد کن" in command:
+            return {
+                "tool": "files",
+                "action": "create_file",
+                "query": command
+            }
+
         # Delete file
-if "فایل حذف کن" in command or "فایل پاک کن" in command:
-    return {
-        "tool": "files",
-        "action": "delete_file",
-        "query": command
-    }
+        if "فایل حذف کن" in command or "فایل پاک کن" in command:
+            return {
+                "tool": "files",
+                "action": "delete_file",
+                "query": command
             }
 
         # Time
@@ -58,6 +65,22 @@ if "فایل حذف کن" in command or "فایل پاک کن" in command:
                 "action": "info"
             }
 
+        # Remember
+        if "یاد بگیر" in command or "یادت باشه" in command:
+            return {
+                "tool": "memory",
+                "action": "remember",
+                "query": command
+            }
+
+        # Terminal command
+        if "اجرا کن" in command or "دستور اجرا کن" in command:
+            return {
+                "tool": "terminal",
+                "action": "run",
+                "query": command
+            }
+
         # Exit
         if command in ["خروج", "بستن", "exit", "quit"]:
             return {
@@ -71,17 +94,3 @@ if "فایل حذف کن" in command or "فایل پاک کن" in command:
             "action": "unknown",
             "query": command
         }
-# Terminal command
-if "اجرا کن" in command or "دستور اجرا کن" in command:
-    return {
-        "tool": "terminal",
-        "action": "run",
-        "query": command
-}
-# Remember
-if "یاد بگیر" in command or "یادت باشه" in command:
-    return {
-        "tool": "memory",
-        "action": "remember",
-        "query": command
-            }
