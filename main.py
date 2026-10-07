@@ -1,6 +1,7 @@
 from core.brain import Brain
 from core.agent import Agent
 from core.tool_manager import ToolManager
+from core.config import APP_NAME, VERSION, EXIT_COMMANDS, MAX_COMMAND_LENGTH
 
 from tools.browser import BrowserTool
 from tools.system import SystemTool
@@ -13,8 +14,8 @@ from memory.memory import Memory
 def main():
 
     print("================================")
-    print("       NEXORA-JARVIS")
-    print("       AI AGENT v0.6")
+    print(f"       {APP_NAME}")
+    print(f"       AI AGENT v{VERSION}")
     print("================================")
 
     # Core
@@ -51,14 +52,16 @@ def main():
         if not command:
             continue
 
-        if command.lower() in ["خروج", "exit", "quit"]:
+        if len(command) > MAX_COMMAND_LENGTH:
+            print("JARVIS: دستور بیش از حد طولانی است.")
+            continue
+
+        if command.lower() in EXIT_COMMANDS:
             print("JARVIS: در حال خاموش شدن...")
             break
 
-        # Save last command
         memory.remember("last_command", command)
 
-        # Execute command
         result = agent.execute(command)
 
         print("JARVIS:", result)
