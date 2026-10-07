@@ -8,6 +8,23 @@ class TerminalTool:
         if not command:
             return "هیچ دستوری وارد نشده است."
 
+        dangerous_words = [
+            "rm ",
+            "del ",
+            "format ",
+            "shutdown",
+            "reboot",
+            "poweroff",
+            "mkfs",
+            "diskpart"
+        ]
+
+        command_lower = command.lower()
+
+        for word in dangerous_words:
+            if word in command_lower:
+                return "این دستور به دلیل مسائل امنیتی اجرا نشد."
+
         try:
             result = subprocess.run(
                 command,
