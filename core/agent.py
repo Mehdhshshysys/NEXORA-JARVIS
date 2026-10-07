@@ -1,6 +1,3 @@
-from core.tool_manager import ToolManager
-
-
 class Agent:
 
     def __init__(self, brain, tool_manager):
