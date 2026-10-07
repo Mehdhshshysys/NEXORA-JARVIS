@@ -28,6 +28,21 @@ class Brain:
                 "query": command
             }
 
+        # List files
+        if "فایل ها" in command or "فایل‌ها" in command:
+            return {
+                "tool": "files",
+                "action": "list_files"
+            }
+
+        # Create file
+        if "فایل بساز" in command or "فایل ایجاد کن" in command:
+            return {
+                "tool": "files",
+                "action": "create_file",
+                "query": command
+            }
+
         # Time
         if "ساعت" in command:
             return {
@@ -53,4 +68,4 @@ class Brain:
             "tool": "unknown",
             "action": "unknown",
             "query": command
-        }
+            }
