@@ -78,3 +78,10 @@ if "اجرا کن" in command or "دستور اجرا کن" in command:
         "action": "run",
         "query": command
 }
+# Remember
+if "یاد بگیر" in command or "یادت باشه" in command:
+    return {
+        "tool": "memory",
+        "action": "remember",
+        "query": command
+            }
