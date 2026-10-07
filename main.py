@@ -8,6 +8,7 @@ from tools.system import SystemTool
 from tools.files import FilesTool
 from tools.terminal import TerminalTool
 from tools.app_tools import AppsTool
+from tools.voice import VoiceTool
 
 from memory.memory import Memory
 
@@ -30,6 +31,7 @@ def main():
     files = FilesTool()
     terminal = TerminalTool()
     apps = AppsTool()
+    voice = VoiceTool()
 
     # Register tools
     tool_manager.register("browser", browser)
@@ -38,6 +40,7 @@ def main():
     tool_manager.register("terminal", terminal)
     tool_manager.register("memory", memory)
     tool_manager.register("apps", apps)
+    tool_manager.register("voice", voice)
 
     # Agent
     agent = Agent(
