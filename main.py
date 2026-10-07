@@ -7,6 +7,7 @@ from tools.browser import BrowserTool
 from tools.system import SystemTool
 from tools.files import FilesTool
 from tools.terminal import TerminalTool
+from tools.app_tools import AppsTool
 
 from memory.memory import Memory
 
@@ -28,6 +29,7 @@ def main():
     system = SystemTool()
     files = FilesTool()
     terminal = TerminalTool()
+    apps = AppsTool()
 
     # Register tools
     tool_manager.register("browser", browser)
@@ -35,6 +37,7 @@ def main():
     tool_manager.register("files", files)
     tool_manager.register("terminal", terminal)
     tool_manager.register("memory", memory)
+    tool_manager.register("apps", apps)
 
     # Agent
     agent = Agent(
