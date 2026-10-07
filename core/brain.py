@@ -35,12 +35,13 @@ class Brain:
                 "action": "list_files"
             }
 
-        # Create file
-        if "فایل بساز" in command or "فایل ایجاد کن" in command:
-            return {
-                "tool": "files",
-                "action": "create_file",
-                "query": command
+        # Delete file
+if "فایل حذف کن" in command or "فایل پاک کن" in command:
+    return {
+        "tool": "files",
+        "action": "delete_file",
+        "query": command
+    }
             }
 
         # Time
