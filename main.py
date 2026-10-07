@@ -49,6 +49,7 @@ def main():
     )
 
     print("JARVIS: سیستم آماده است.")
+    print("JARVIS: حالت صوتی آماده است.")
     print("JARVIS: منتظر دستور شما هستم.")
 
     while True:
@@ -64,6 +65,7 @@ def main():
 
         if command.lower() in EXIT_COMMANDS:
             print("JARVIS: در حال خاموش شدن...")
+            voice.speak("در حال خاموش شدن.")
             break
 
         memory.remember("last_command", command)
@@ -71,6 +73,9 @@ def main():
         result = agent.execute(command)
 
         print("JARVIS:", result)
+
+        if result != "EXIT":
+            voice.say_response(str(result))
 
 
 if __name__ == "__main__":
