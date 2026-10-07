@@ -39,6 +39,50 @@ class VoiceTool:
 
         return "سیستم‌عامل فعلی برای خروجی صوتی تعریف نشده است."
 
+    def listen(self):
+        if self.system != "windows":
+            return "سیستم‌عامل فعلی برای دریافت صدا تعریف نشده است."
+
+        try:
+            command = """
+Add-Type -AssemblyName System.Speech
+
+$recognizer = New-Object System.Speech.Recognition.SpeechRecognitionEngine
+$recognizer.SetInputToDefaultAudioDevice()
+
+$grammar = New-Object System.Speech.Recognition.DictationGrammar
+$recognizer.LoadGrammar($grammar)
+
+$result = $recognizer.Recognize()
+
+if ($result) {
+    Write-Output $result.Text
+}
+
+$recognizer.Dispose()
+"""
+
+            result = subprocess.run(
+                [
+                    "powershell",
+                    "-NoProfile",
+                    "-Command",
+                    command
+                ],
+                capture_output=True,
+                text=True
+            )
+
+            text = result.stdout.strip()
+
+            if text:
+                return text
+
+            return ""
+
+        except Exception as error:
+            return f"خطا در دریافت صدا: {error}"
+
     def say_ready(self):
         return self.speak("بله؟")
 
