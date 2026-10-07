@@ -4,6 +4,7 @@ from core.tool_manager import ToolManager
 
 from tools.browser import BrowserTool
 from tools.system import SystemTool
+from tools.files import FilesTool
 
 from memory.memory import Memory
 
@@ -12,18 +13,20 @@ def main():
 
     print("================================")
     print("       NEXORA-JARVIS")
-    print("       AI AGENT v0.3")
+    print("       AI AGENT v0.4")
     print("================================")
 
     brain = Brain()
 
     browser = BrowserTool()
     system = SystemTool()
+    files = FilesTool()
 
     tool_manager = ToolManager()
 
     tool_manager.register("browser", browser)
     tool_manager.register("system", system)
+    tool_manager.register("files", files)
 
     memory = Memory()
 
