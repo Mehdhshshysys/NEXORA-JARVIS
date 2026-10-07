@@ -33,6 +33,8 @@ class Memory:
         data[key] = value
         self.save(data)
 
+        return f"ذخیره شد: {key}"
+
     def recall(self, key):
         data = self.load()
         return data.get(key)
@@ -42,5 +44,10 @@ class Memory:
 
         if key in data:
             del data[key]
+            self.save(data)
+            return f"حذف شد: {key}"
 
-        self.save(data)
+        return "چیزی با این نام پیدا نشد."
+
+    def all_memory(self):
+        return self.load()
