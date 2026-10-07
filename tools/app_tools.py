@@ -8,8 +8,17 @@ class AppsTool:
         "notepad": {
             "windows": ["notepad.exe"]
         },
+
         "calculator": {
             "windows": ["calc.exe"]
+        },
+
+        "paint": {
+            "windows": ["mspaint.exe"]
+        },
+
+        "explorer": {
+            "windows": ["explorer.exe"]
         }
     }
 
