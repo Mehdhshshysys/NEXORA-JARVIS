@@ -20,6 +20,14 @@ class Brain:
                 "query": command
             }
 
+        # Open website
+        if "باز کن" in command and "سایت" in command:
+            return {
+                "tool": "browser",
+                "action": "open_site",
+                "query": command
+            }
+
         # Time
         if "ساعت" in command:
             return {
@@ -41,7 +49,6 @@ class Brain:
                 "action": "exit"
             }
 
-        # Unknown command
         return {
             "tool": "unknown",
             "action": "unknown",
