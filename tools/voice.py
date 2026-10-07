@@ -9,7 +9,7 @@ class VoiceTool:
 
     def speak(self, text):
         if not text:
-            return
+            return ""
 
         if self.system == "windows":
             try:
@@ -41,7 +41,7 @@ class VoiceTool:
 
     def listen(self):
         if self.system != "windows":
-            return "سیستم‌عامل فعلی برای دریافت صدا تعریف نشده است."
+            return ""
 
         try:
             command = """
@@ -73,15 +73,41 @@ $recognizer.Dispose()
                 text=True
             )
 
-            text = result.stdout.strip()
+            return result.stdout.strip()
 
-            if text:
-                return text
-
+        except Exception:
             return ""
 
-        except Exception as error:
-            return f"خطا در دریافت صدا: {error}"
+    def detect_wake_word(self, text):
+        if not text:
+            return False
+
+        normalized = text.lower().strip()
+
+        wake_words = [
+            "nexora",
+            "nexora jarvis",
+            "نکسورا",
+            "نکسورا جارویس"
+        ]
+
+        for wake_word in wake_words:
+            if wake_word in normalized:
+                return True
+
+        return False
+
+    def wait_for_wake_word(self):
+        while True:
+
+            heard = self.listen()
+
+            if not heard:
+                continue
+
+            if self.detect_wake_word(heard):
+                self.say_ready()
+                return True
 
     def say_ready(self):
         return self.speak("بله؟")
