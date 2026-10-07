@@ -6,26 +6,33 @@ class Agent:
 
     def execute(self, command):
 
-        decision = self.brain.understand(command)
+        if not command:
+            return "دستوری دریافت نشد."
 
-        tool = decision.get("tool")
-        action = decision.get("action")
-        query = decision.get("query", "")
+        try:
+            decision = self.brain.understand(command)
 
-        if tool == "unknown":
-            return "دستور را متوجه نشدم."
+            tool = decision.get("tool")
+            action = decision.get("action")
+            query = decision.get("query")
 
-        if action == "exit":
-            return "EXIT"
+            if tool == "unknown":
+                return "دستور را متوجه نشدم."
 
-        if query:
+            if action == "exit":
+                return "EXIT"
+
+            if query:
+                return self.tool_manager.run(
+                    tool,
+                    action,
+                    query
+                )
+
             return self.tool_manager.run(
                 tool,
-                action,
-                query
+                action
             )
 
-        return self.tool_manager.run(
-            tool,
-            action
-        )
+        except Exception as error:
+            return f"خطا در اجرای دستور: {error}"
