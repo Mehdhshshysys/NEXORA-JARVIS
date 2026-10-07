@@ -19,8 +19,9 @@ def main():
     brain = Brain()
 
     browser = BrowserTool()
-    system = SystemTool()
-    files = FilesTool()
+system = SystemTool()
+files = FilesTool()
+terminal = TerminalTool()
 
     tool_manager = ToolManager()
 
