@@ -1,6 +1,12 @@
 import subprocess
 import platform
 
+from core.voice_config import (
+    WAKE_WORDS,
+    READY_MESSAGE,
+    VOICE_TIMEOUT
+)
+
 
 class VoiceTool:
 
@@ -8,43 +14,47 @@ class VoiceTool:
         self.system = platform.system().lower()
 
     def speak(self, text):
+
         if not text:
             return ""
 
-        if self.system == "windows":
-            try:
-                escaped_text = str(text).replace("'", "''")
+        if self.system != "windows":
+            return "سیستم‌عامل فعلی برای خروجی صوتی تعریف نشده است."
 
-                command = (
-                    "Add-Type -AssemblyName System.Speech; "
-                    "$speak = New-Object System.Speech.Synthesis.SpeechSynthesizer; "
-                    f"$speak.Speak('{escaped_text}');"
-                )
+        try:
+            escaped_text = str(text).replace("'", "''")
 
-                subprocess.Popen(
-                    [
-                        "powershell",
-                        "-NoProfile",
-                        "-Command",
-                        command
-                    ],
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL
-                )
+            command = (
+                "Add-Type -AssemblyName System.Speech; "
+                "$speak = New-Object "
+                "System.Speech.Synthesis.SpeechSynthesizer; "
+                f"$speak.Speak('{escaped_text}');"
+            )
 
-                return "صدا پخش شد."
+            subprocess.Popen(
+                [
+                    "powershell",
+                    "-NoProfile",
+                    "-Command",
+                    command
+                ],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
 
-            except Exception as error:
-                return f"خطا در پخش صدا: {error}"
+            return "صدا پخش شد."
 
-        return "سیستم‌عامل فعلی برای خروجی صوتی تعریف نشده است."
+        except Exception as error:
+            return f"خطا در پخش صدا: {error}"
 
     def listen(self):
+
         if self.system != "windows":
             return ""
 
         try:
-            command = """
+
+            command = f"""
 Add-Type -AssemblyName System.Speech
 
 $recognizer = New-Object System.Speech.Recognition.SpeechRecognitionEngine
@@ -53,11 +63,13 @@ $recognizer.SetInputToDefaultAudioDevice()
 $grammar = New-Object System.Speech.Recognition.DictationGrammar
 $recognizer.LoadGrammar($grammar)
 
-$result = $recognizer.Recognize()
+$result = $recognizer.Recognize(
+    [TimeSpan]::FromSeconds({VOICE_TIMEOUT})
+)
 
-if ($result) {
+if ($result) {{
     Write-Output $result.Text
-}
+}}
 
 $recognizer.Dispose()
 """
@@ -79,25 +91,21 @@ $recognizer.Dispose()
             return ""
 
     def detect_wake_word(self, text):
+
         if not text:
             return False
 
         normalized = text.lower().strip()
 
-        wake_words = [
-            "nexora",
-            "nexora jarvis",
-            "نکسورا",
-            "نکسورا جارویس"
-        ]
+        for wake_word in WAKE_WORDS:
 
-        for wake_word in wake_words:
-            if wake_word in normalized:
+            if wake_word.lower() in normalized:
                 return True
 
         return False
 
     def wait_for_wake_word(self):
+
         while True:
 
             heard = self.listen()
@@ -106,11 +114,21 @@ $recognizer.Dispose()
                 continue
 
             if self.detect_wake_word(heard):
-                self.say_ready()
+
+                self.speak(
+                    READY_MESSAGE
+                )
+
                 return True
 
     def say_ready(self):
-        return self.speak("بله؟")
+
+        return self.speak(
+            READY_MESSAGE
+        )
 
     def say_response(self, response):
-        return self.speak(response)
+
+        return self.speak(
+            response
+        )
