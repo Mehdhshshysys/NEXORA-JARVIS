@@ -1,5 +1,5 @@
 APP_NAME = "NEXORA-JARVIS"
-VERSION = "0.8"
+VERSION = "1.0"
 
 LANGUAGE = "fa"
 
@@ -23,3 +23,5 @@ WAKE_WORD = "nexora"
 VOICE_READY_MESSAGE = "بله؟"
 
 VOICE_ERROR_MESSAGE = "متأسفانه صدای شما دریافت نشد."
+
+VOICE_MODE = "always_listening"
