@@ -1,1 +1,459 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXORA-JARVIS</title>
 
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    #102c46 0%,
+                    #071522 35%,
+                    #02070d 75%
+                );
+
+            color: #e9fbff;
+            font-family: Arial, sans-serif;
+        }
+
+        .app {
+            width: 100%;
+            height: 100vh;
+
+            display: flex;
+            flex-direction: column;
+
+            padding: 18px;
+            gap: 15px;
+        }
+
+        /* TOP */
+
+        .top {
+            height: 65px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 25px;
+
+            border: 1px solid rgba(0, 220, 255, .2);
+            border-radius: 18px;
+
+            background: rgba(3, 12, 23, .65);
+            backdrop-filter: blur(15px);
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            letter-spacing: 4px;
+        }
+
+        .online {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            font-size: 12px;
+            color: #75eaff;
+        }
+
+        .dot {
+            width: 9px;
+            height: 9px;
+
+            border-radius: 50%;
+            background: #28eaff;
+
+            box-shadow:
+                0 0 10px #28eaff,
+                0 0 25px #28eaff;
+        }
+
+        /* MAIN */
+
+        .main {
+            flex: 1;
+
+            display: grid;
+            grid-template-columns: 240px 1fr 240px;
+
+            gap: 15px;
+        }
+
+        .panel {
+            padding: 18px;
+
+            border: 1px solid rgba(0, 220, 255, .18);
+            border-radius: 20px;
+
+            background: rgba(3, 12, 23, .58);
+            backdrop-filter: blur(18px);
+        }
+
+        .title {
+            color: #61e8ff;
+            font-size: 11px;
+            letter-spacing: 3px;
+
+            margin-bottom: 25px;
+        }
+
+        .item {
+            margin-bottom: 20px;
+        }
+
+        .label {
+            color: #607889;
+            font-size: 10px;
+            margin-bottom: 6px;
+        }
+
+        .value {
+            font-size: 13px;
+            color: #d9faff;
+        }
+
+        /* CENTER */
+
+        .center {
+            position: relative;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 1px solid rgba(0, 220, 255, .12);
+            border-radius: 25px;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(0, 170, 255, .08),
+                    transparent 60%
+                );
+        }
+
+        .orb {
+            position: relative;
+
+            width: 320px;
+            height: 320px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* OUTER RINGS */
+
+        .ring {
+            position: absolute;
+
+            border-radius: 50%;
+
+            border: 1px solid rgba(50, 220, 255, .3);
+
+            animation: rotate 12s linear infinite;
+        }
+
+        .ring.one {
+            width: 100%;
+            height: 100%;
+        }
+
+        .ring.two {
+            width: 82%;
+            height: 82%;
+
+            border-style: dashed;
+
+            animation-duration: 8s;
+            animation-direction: reverse;
+        }
+
+        .ring.three {
+            width: 65%;
+            height: 65%;
+
+            border-color: rgba(80, 220, 255, .5);
+
+            animation-duration: 5s;
+        }
+
+        /* CORE */
+
+        .core {
+            width: 42%;
+            height: 42%;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle at 45% 40%,
+                    #ffffff 0%,
+                    #80edff 8%,
+                    #00aaff 28%,
+                    #07518b 52%,
+                    #031827 72%,
+                    transparent 74%
+                );
+
+            box-shadow:
+                0 0 25px #00c8ff,
+                0 0 60px rgba(0, 180, 255, .7),
+                0 0 120px rgba(0, 130, 255, .35);
+
+            animation: pulse 2.3s ease-in-out infinite;
+        }
+
+        .state {
+            position: absolute;
+
+            bottom: 25px;
+
+            color: #67e6ff;
+
+            font-size: 12px;
+            letter-spacing: 3px;
+        }
+
+        /* ACTIVITY */
+
+        .activity {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .activity div {
+            padding: 12px;
+
+            border-radius: 12px;
+
+            background: rgba(0, 160, 220, .05);
+            border: 1px solid rgba(0, 210, 255, .08);
+
+            font-size: 11px;
+            color: #8ba5b5;
+        }
+
+        .activity .active {
+            color: #65e8ff;
+            border-color: rgba(0, 220, 255, .3);
+        }
+
+        /* BOTTOM */
+
+        .bottom {
+            height: 65px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            gap: 12px;
+        }
+
+        button {
+            min-width: 120px;
+
+            padding: 12px 18px;
+
+            color: #c9f7ff;
+
+            background: rgba(3, 15, 28, .8);
+
+            border: 1px solid rgba(0, 210, 255, .2);
+            border-radius: 14px;
+
+            cursor: pointer;
+
+            transition: .25s;
+        }
+
+        button:hover {
+            border-color: #00d9ff;
+
+            box-shadow:
+                0 0 20px rgba(0, 210, 255, .25);
+
+            transform: translateY(-2px);
+        }
+
+        /* ANIMATION */
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(.94);
+            }
+
+            50% {
+                transform: scale(1.06);
+            }
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 850px) {
+
+            body {
+                overflow: auto;
+            }
+
+            .main {
+                grid-template-columns: 1fr;
+            }
+
+            .panel {
+                display: none;
+            }
+
+            .center {
+                min-height: 65vh;
+            }
+
+            .orb {
+                width: 280px;
+                height: 280px;
+            }
+
+            .bottom {
+                flex-wrap: wrap;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <header class="top">
+
+        <div class="logo">
+            NEXORA
+        </div>
+
+        <div class="online">
+            <span class="dot"></span>
+            SYSTEM ONLINE
+        </div>
+
+    </header>
+
+
+    <main class="main">
+
+        <aside class="panel">
+
+            <div class="title">
+                SYSTEM
+            </div>
+
+            <div class="item">
+                <div class="label">AI CORE</div>
+                <div class="value">NEXORA-JARVIS</div>
+            </div>
+
+            <div class="item">
+                <div class="label">VERSION</div>
+                <div class="value">1.0</div>
+            </div>
+
+            <div class="item">
+                <div class="label">MODE</div>
+                <div class="value">VOICE MODE</div>
+            </div>
+
+            <div class="item">
+                <div class="label">LANGUAGE</div>
+                <div class="value">فارسی</div>
+            </div>
+
+        </aside>
+
+
+        <section class="center">
+
+            <div class="orb">
+
+                <div class="ring one"></div>
+                <div class="ring two"></div>
+                <div class="ring three"></div>
+
+                <div class="core"></div>
+
+            </div>
+
+            <div class="state">
+                آماده دریافت فرمان
+            </div>
+
+        </section>
+
+
+        <aside class="panel">
+
+            <div class="title">
+                ACTIVITY
+            </div>
+
+            <div class="activity">
+
+                <div class="active">
+                    ● NEXORA ONLINE
+                </div>
+
+                <div>
+                    انتظار فرمان صوتی...
+                </div>
+
+                <div>
+                    سیستم آماده است
+                </div>
+
+            </div>
+
+        </aside>
+
+    </main>
+
+
+    <footer class="bottom">
+
+        <button>🎙️ Voice</button>
+        <button>💬 Chat</button>
+        <button>⚙ Settings</button>
+
+    </footer>
+
+</div>
+
+</body>
+      </html>
