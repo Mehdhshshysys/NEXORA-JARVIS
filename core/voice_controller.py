@@ -14,24 +14,35 @@ class VoiceController:
         self.memory = memory
 
     def wait_for_wake_word(self):
+
+        if not ALWAYS_LISTENING:
+            return False
+
         return self.voice.wait_for_wake_word()
 
     def listen_command(self):
 
+        if not LISTEN_AFTER_WAKE:
+            return None
+
         command = self.voice.listen()
 
         if not command:
+
             self.voice.speak(
                 NO_COMMAND_MESSAGE
             )
+
             return None
 
         command = command.strip()
 
         if len(command) > MAX_COMMAND_LENGTH:
+
             self.voice.speak(
                 "دستور بیش از حد طولانی است."
             )
+
             return None
 
         return command
@@ -56,9 +67,11 @@ class VoiceController:
             return
 
         if result == "EXIT":
+
             self.voice.speak(
                 "در حال خاموش شدن."
             )
+
             return
 
         self.voice.say_response(
@@ -67,15 +80,9 @@ class VoiceController:
 
     def run_once(self):
 
-        if not ALWAYS_LISTENING:
-            return False
-
         activated = self.wait_for_wake_word()
 
         if not activated:
-            return True
-
-        if not LISTEN_AFTER_WAKE:
             return True
 
         command = self.listen_command()
@@ -88,9 +95,15 @@ class VoiceController:
         )
 
         if result == "EXIT":
-            self.respond(result)
+
+            self.respond(
+                result
+            )
+
             return False
 
-        self.respond(result)
+        self.respond(
+            result
+        )
 
         return True
