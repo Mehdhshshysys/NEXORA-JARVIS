@@ -1,13 +1,28 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>NEXORA-JARVIS</title>
 
     <style>
+        :root {
+            --orb-speed: 12s;
+            --cyan: #35eaff;
+            --blue: #008cff;
+            --deep: #020711;
+        }
+
         * {
             box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
         }
 
         body {
@@ -15,17 +30,37 @@
             min-height: 100vh;
             overflow: hidden;
 
+            color: #eaffff;
+            font-family: Arial, sans-serif;
+
             background:
                 radial-gradient(
+                    circle at 50% 45%,
+                    rgba(0, 160, 255, .15),
+                    transparent 28%
+                ),
+                radial-gradient(
                     circle at center,
-                    #102c46 0%,
-                    #071522 35%,
-                    #02070d 75%
+                    #0a2035 0%,
+                    #050d18 38%,
+                    #02050b 72%,
+                    #010207 100%
                 );
 
-            color: #e9fbff;
-            font-family: Arial, sans-serif;
+            transition: background 1s ease;
         }
+
+        /* =========================
+           GLOBAL
+        ========================= */
+
+        button {
+            font-family: inherit;
+        }
+
+        /* =========================
+           APP
+        ========================= */
 
         .app {
             width: 100%;
@@ -34,169 +69,303 @@
             display: flex;
             flex-direction: column;
 
-            padding: 18px;
-            gap: 15px;
+            padding: 16px;
+            gap: 14px;
         }
 
-        /* TOP */
+        /* =========================
+           TOP BAR
+        ========================= */
 
         .top {
-            height: 65px;
+            height: 64px;
+            flex-shrink: 0;
 
             display: flex;
             align-items: center;
             justify-content: space-between;
 
-            padding: 0 25px;
+            padding: 0 24px;
 
-            border: 1px solid rgba(0, 220, 255, .2);
+            border: 1px solid rgba(53, 234, 255, .18);
             border-radius: 18px;
 
-            background: rgba(3, 12, 23, .65);
-            backdrop-filter: blur(15px);
+            background:
+                linear-gradient(
+                    120deg,
+                    rgba(4, 16, 30, .85),
+                    rgba(2, 9, 19, .55)
+                );
+
+            backdrop-filter: blur(20px);
+
+            box-shadow:
+                inset 0 0 25px rgba(0, 180, 255, .025),
+                0 0 35px rgba(0, 120, 255, .05);
         }
 
         .logo {
             font-size: 22px;
-            font-weight: bold;
-            letter-spacing: 4px;
+            font-weight: 700;
+            letter-spacing: 5px;
+
+            color: #e8fbff;
+
+            text-shadow:
+                0 0 12px rgba(53, 234, 255, .35);
         }
 
         .online {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 9px;
 
-            font-size: 12px;
-            color: #75eaff;
+            color: #73eaff;
+
+            font-size: 11px;
+            letter-spacing: 1px;
         }
 
         .dot {
-            width: 9px;
-            height: 9px;
+            width: 8px;
+            height: 8px;
 
             border-radius: 50%;
-            background: #28eaff;
+
+            background: var(--cyan);
 
             box-shadow:
-                0 0 10px #28eaff,
-                0 0 25px #28eaff;
+                0 0 8px var(--cyan),
+                0 0 20px var(--cyan);
+
+            animation: onlinePulse 1.8s ease-in-out infinite;
         }
 
-        /* MAIN */
+        /* =========================
+           MAIN
+        ========================= */
 
         .main {
             flex: 1;
+            min-height: 0;
 
             display: grid;
-            grid-template-columns: 240px 1fr 240px;
+            grid-template-columns: 235px minmax(0, 1fr) 235px;
 
-            gap: 15px;
+            gap: 14px;
         }
 
+        /* =========================
+           PANELS
+        ========================= */
+
         .panel {
+            min-width: 0;
+
             padding: 18px;
 
-            border: 1px solid rgba(0, 220, 255, .18);
+            border: 1px solid rgba(53, 234, 255, .14);
             border-radius: 20px;
 
-            background: rgba(3, 12, 23, .58);
+            background:
+                linear-gradient(
+                    150deg,
+                    rgba(4, 17, 30, .75),
+                    rgba(2, 8, 16, .55)
+                );
+
             backdrop-filter: blur(18px);
+
+            box-shadow:
+                inset 0 0 30px rgba(0, 150, 255, .025),
+                0 0 30px rgba(0, 100, 255, .04);
         }
 
         .title {
-            color: #61e8ff;
-            font-size: 11px;
-            letter-spacing: 3px;
+            margin-bottom: 24px;
 
-            margin-bottom: 25px;
+            color: #5de7ff;
+
+            font-size: 10px;
+            letter-spacing: 3px;
         }
 
         .item {
-            margin-bottom: 20px;
+            margin-bottom: 19px;
         }
 
         .label {
-            color: #607889;
-            font-size: 10px;
             margin-bottom: 6px;
+
+            color: #526c7e;
+
+            font-size: 9px;
+            letter-spacing: 1px;
         }
 
         .value {
-            font-size: 13px;
             color: #d9faff;
+
+            font-size: 12px;
         }
 
-        /* CENTER */
+        /* =========================
+           CENTER
+        ========================= */
 
         .center {
             position: relative;
 
+            min-width: 0;
+            overflow: hidden;
+
             display: flex;
             align-items: center;
             justify-content: center;
 
-            border: 1px solid rgba(0, 220, 255, .12);
+            border: 1px solid rgba(53, 234, 255, .09);
             border-radius: 25px;
 
             background:
                 radial-gradient(
-                    circle,
-                    rgba(0, 170, 255, .08),
-                    transparent 60%
+                    circle at center,
+                    rgba(0, 160, 255, .09),
+                    transparent 45%
                 );
         }
 
+        .center::before {
+            content: "";
+
+            position: absolute;
+
+            width: 70%;
+            height: 70%;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(0, 180, 255, .09),
+                    transparent 65%
+                );
+
+            filter: blur(20px);
+
+            animation: ambient 4s ease-in-out infinite;
+        }
+
+        /* =========================
+           ORB
+        ========================= */
+
         .orb {
             position: relative;
+            z-index: 2;
 
-            width: 320px;
-            height: 320px;
+            width: min(390px, 48vw);
+            height: min(390px, 48vw);
 
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* OUTER RINGS */
+        /* Outer energy field */
+
+        .orb::before {
+            content: "";
+
+            position: absolute;
+
+            width: 112%;
+            height: 112%;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(0, 180, 255, .08),
+                    transparent 65%
+                );
+
+            filter: blur(10px);
+
+            animation: energy 3s ease-in-out infinite;
+        }
+
+        /* =========================
+           RINGS
+        ========================= */
 
         .ring {
             position: absolute;
 
             border-radius: 50%;
 
-            border: 1px solid rgba(50, 220, 255, .3);
+            border: 1px solid rgba(53, 234, 255, .28);
 
-            animation: rotate 12s linear infinite;
+            box-shadow:
+                0 0 15px rgba(0, 200, 255, .04);
+
+            animation:
+                rotate var(--orb-speed)
+                linear infinite;
         }
 
         .ring.one {
             width: 100%;
             height: 100%;
+
+            border-color:
+                rgba(53, 234, 255, .23);
         }
 
         .ring.two {
-            width: 82%;
-            height: 82%;
+            width: 86%;
+            height: 86%;
 
             border-style: dashed;
+            border-color:
+                rgba(0, 160, 255, .34);
 
             animation-duration: 8s;
             animation-direction: reverse;
         }
 
         .ring.three {
-            width: 65%;
-            height: 65%;
+            width: 70%;
+            height: 70%;
 
-            border-color: rgba(80, 220, 255, .5);
+            border-color:
+                rgba(85, 230, 255, .48);
 
             animation-duration: 5s;
         }
 
-        /* CORE */
+        .ring.four {
+            width: 54%;
+            height: 54%;
+
+            border-style: dotted;
+
+            border-color:
+                rgba(255, 255, 255, .25);
+
+            animation-duration: 3s;
+            animation-direction: reverse;
+        }
+
+        /* =========================
+           ORB CORE
+        ========================= */
 
         .core {
+            position: relative;
+            z-index: 4;
+
             width: 42%;
             height: 42%;
 
@@ -204,98 +373,222 @@
 
             background:
                 radial-gradient(
-                    circle at 45% 40%,
+                    circle at 42% 38%,
                     #ffffff 0%,
-                    #80edff 8%,
-                    #00aaff 28%,
-                    #07518b 52%,
-                    #031827 72%,
-                    transparent 74%
+                    #d7fbff 5%,
+                    #67eaff 13%,
+                    #00baff 28%,
+                    #0870b5 46%,
+                    #053150 62%,
+                    #020f1d 74%,
+                    transparent 76%
                 );
 
             box-shadow:
-                0 0 25px #00c8ff,
-                0 0 60px rgba(0, 180, 255, .7),
-                0 0 120px rgba(0, 130, 255, .35);
+                0 0 20px #00d9ff,
+                0 0 45px rgba(0, 210, 255, .75),
+                0 0 90px rgba(0, 150, 255, .55),
+                0 0 150px rgba(0, 100, 255, .25);
 
-            animation: pulse 2.3s ease-in-out infinite;
+            animation:
+                corePulse 2.3s ease-in-out infinite;
         }
+
+        .core::before {
+            content: "";
+
+            position: absolute;
+
+            inset: 13%;
+
+            border-radius: 50%;
+
+            border: 1px solid rgba(255, 255, 255, .38);
+
+            opacity: .55;
+
+            animation:
+                coreRotate 4s linear infinite;
+        }
+
+        .core::after {
+            content: "";
+
+            position: absolute;
+
+            width: 12%;
+            height: 12%;
+
+            top: 25%;
+            left: 29%;
+
+            border-radius: 50%;
+
+            background: white;
+
+            box-shadow:
+                0 0 12px white,
+                0 0 25px #7eeeff,
+                0 0 50px #00c8ff;
+        }
+
+        /* =========================
+           VOICE STATE
+        ========================= */
 
         .state {
             position: absolute;
 
-            bottom: 25px;
+            bottom: 24px;
+            z-index: 5;
 
-            color: #67e6ff;
+            color: #72e9ff;
 
-            font-size: 12px;
+            font-size: 11px;
             letter-spacing: 3px;
+
+            text-shadow:
+                0 0 10px rgba(53, 234, 255, .45);
+
+            transition:
+                color .4s ease,
+                text-shadow .4s ease;
         }
 
-        /* ACTIVITY */
+        /* =========================
+           ACTIVITY
+        ========================= */
 
         .activity {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+
+            gap: 9px;
         }
 
         .activity div {
             padding: 12px;
 
-            border-radius: 12px;
+            border-radius: 11px;
 
-            background: rgba(0, 160, 220, .05);
-            border: 1px solid rgba(0, 210, 255, .08);
+            border: 1px solid rgba(53, 234, 255, .07);
 
-            font-size: 11px;
-            color: #8ba5b5;
+            background:
+                rgba(0, 140, 200, .035);
+
+            color: #819aaa;
+
+            font-size: 10px;
+
+            transition:
+                .25s ease;
         }
 
         .activity .active {
             color: #65e8ff;
-            border-color: rgba(0, 220, 255, .3);
+
+            border-color:
+                rgba(53, 234, 255, .25);
+
+            box-shadow:
+                inset 0 0 15px rgba(0, 180, 255, .03);
         }
 
-        /* BOTTOM */
+        /* =========================
+           BOTTOM
+        ========================= */
 
         .bottom {
-            height: 65px;
+            height: 62px;
+            flex-shrink: 0;
 
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
 
-            gap: 12px;
+            gap: 10px;
         }
 
         button {
             min-width: 120px;
 
-            padding: 12px 18px;
+            padding: 11px 18px;
 
-            color: #c9f7ff;
+            border-radius: 13px;
 
-            background: rgba(3, 15, 28, .8);
+            border: 1px solid rgba(53, 234, 255, .16);
 
-            border: 1px solid rgba(0, 210, 255, .2);
-            border-radius: 14px;
+            background:
+                rgba(3, 15, 27, .75);
+
+            color: #bcefff;
 
             cursor: pointer;
 
-            transition: .25s;
+            transition: .25s ease;
         }
 
         button:hover {
-            border-color: #00d9ff;
+            color: white;
+
+            border-color:
+                rgba(53, 234, 255, .55);
 
             box-shadow:
-                0 0 20px rgba(0, 210, 255, .25);
+                0 0 20px rgba(0, 200, 255, .15);
 
             transform: translateY(-2px);
         }
 
-        /* ANIMATION */
+        /* =========================
+           STATES
+        ========================= */
+
+        body[data-state="listening"] {
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(0, 210, 255, .22),
+                    transparent 35%
+                ),
+                #02070e;
+        }
+
+        body[data-state="thinking"] {
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(100, 0, 255, .18),
+                    transparent 35%
+                ),
+                #02050c;
+        }
+
+        body[data-state="speaking"] {
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(0, 255, 190, .16),
+                    transparent 35%
+                ),
+                #02090b;
+        }
+
+        body[data-state="listening"] .core {
+            animation-duration: 1s;
+        }
+
+        body[data-state="thinking"] .ring {
+            animation-duration: 1.4s;
+        }
+
+        body[data-state="speaking"] .core {
+            animation-duration: .65s;
+        }
+
+        /* =========================
+           ANIMATIONS
+        ========================= */
 
         @keyframes rotate {
             from {
@@ -307,8 +600,19 @@
             }
         }
 
-        @keyframes pulse {
-            0%, 100% {
+        @keyframes coreRotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(-360deg);
+            }
+        }
+
+        @keyframes corePulse {
+            0%,
+            100% {
                 transform: scale(.94);
             }
 
@@ -317,7 +621,46 @@
             }
         }
 
-        /* MOBILE */
+        @keyframes onlinePulse {
+            0%,
+            100% {
+                opacity: .5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes ambient {
+            0%,
+            100% {
+                transform: scale(.9);
+                opacity: .5;
+            }
+
+            50% {
+                transform: scale(1.08);
+                opacity: 1;
+            }
+        }
+
+        @keyframes energy {
+            0%,
+            100% {
+                transform: scale(.92);
+                opacity: .45;
+            }
+
+            50% {
+                transform: scale(1.08);
+                opacity: 1;
+            }
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
 
         @media (max-width: 850px) {
 
@@ -325,8 +668,15 @@
                 overflow: auto;
             }
 
+            .app {
+                min-height: 100vh;
+                height: auto;
+            }
+
             .main {
                 grid-template-columns: 1fr;
+
+                min-height: 65vh;
             }
 
             .panel {
@@ -338,13 +688,18 @@
             }
 
             .orb {
-                width: 280px;
-                height: 280px;
+                width: min(330px, 80vw);
+                height: min(330px, 80vw);
             }
 
             .bottom {
-                flex-wrap: wrap;
                 height: auto;
+
+                flex-wrap: wrap;
+            }
+
+            button {
+                min-width: 105px;
             }
         }
     </style>
@@ -361,8 +716,11 @@
         </div>
 
         <div class="online">
+
             <span class="dot"></span>
+
             SYSTEM ONLINE
+
         </div>
 
     </header>
@@ -377,23 +735,51 @@
             </div>
 
             <div class="item">
-                <div class="label">AI CORE</div>
-                <div class="value">NEXORA-JARVIS</div>
+
+                <div class="label">
+                    AI CORE
+                </div>
+
+                <div class="value">
+                    NEXORA-JARVIS
+                </div>
+
             </div>
 
             <div class="item">
-                <div class="label">VERSION</div>
-                <div class="value">1.0</div>
+
+                <div class="label">
+                    VERSION
+                </div>
+
+                <div class="value">
+                    1.0
+                </div>
+
             </div>
 
             <div class="item">
-                <div class="label">MODE</div>
-                <div class="value">VOICE MODE</div>
+
+                <div class="label">
+                    MODE
+                </div>
+
+                <div class="value">
+                    VOICE MODE
+                </div>
+
             </div>
 
             <div class="item">
-                <div class="label">LANGUAGE</div>
-                <div class="value">فارسی</div>
+
+                <div class="label">
+                    LANGUAGE
+                </div>
+
+                <div class="value">
+                    فارسی
+                </div>
+
             </div>
 
         </aside>
@@ -404,8 +790,12 @@
             <div class="orb">
 
                 <div class="ring one"></div>
+
                 <div class="ring two"></div>
+
                 <div class="ring three"></div>
+
+                <div class="ring four"></div>
 
                 <div class="core"></div>
 
@@ -447,13 +837,25 @@
 
     <footer class="bottom">
 
-        <button>🎙️ Voice</button>
-        <button>💬 Chat</button>
-        <button>⚙ Settings</button>
+        <button>
+            🎙️ Voice
+        </button>
+
+        <button>
+            💬 Chat
+        </button>
+
+        <button>
+            ⚙ Settings
+        </button>
 
     </footer>
 
 </div>
+
+
 <script src="app.js"></script>
+
 </body>
-      </html>
+
+</html>
