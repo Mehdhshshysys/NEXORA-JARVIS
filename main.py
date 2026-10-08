@@ -1,6 +1,8 @@
 from core.brain import Brain
 from core.agent import Agent
 from core.tool_manager import ToolManager
+from core.voice_controller import VoiceController
+
 from core.config import (
     APP_NAME,
     VERSION,
@@ -68,53 +70,38 @@ def text_mode(agent, memory, voice):
             voice.speak("در حال خاموش شدن.")
             break
 
-        memory.remember("last_command", command)
+        memory.remember(
+            "last_command",
+            command
+        )
 
         result = agent.execute(command)
 
         print("JARVIS:", result)
 
         if result != "EXIT":
-            voice.say_response(str(result))
+            voice.say_response(
+                str(result)
+            )
 
 
 def voice_mode(agent, memory, voice):
 
+    controller = VoiceController(
+        voice,
+        agent,
+        memory
+    )
+
     print("JARVIS: حالت صوتی فعال است.")
-    print("JARVIS: منتظر کلمه NEXORA هستم.")
+    print("JARVIS: منتظر NEXORA هستم.")
 
     while True:
 
-        activated = voice.wait_for_wake_word()
+        running = controller.run_once()
 
-        if not activated:
-            continue
-
-        command = voice.listen()
-
-        if not command:
-            voice.speak("دستوری دریافت نکردم.")
-            continue
-
-        if len(command) > MAX_COMMAND_LENGTH:
-            voice.speak("دستور بیش از حد طولانی است.")
-            continue
-
-        if command.lower() in EXIT_COMMANDS:
-            voice.speak("در حال خاموش شدن.")
+        if not running:
             break
-
-        memory.remember("last_command", command)
-
-        result = agent.execute(command)
-
-        if result == "EXIT":
-            voice.speak("در حال خاموش شدن.")
-            break
-
-        print("JARVIS:", result)
-
-        voice.say_response(str(result))
 
 
 def main():
@@ -129,12 +116,15 @@ def main():
     print("JARVIS: سیستم آماده است.")
 
     if VOICE_ENABLED:
+
         voice_mode(
             agent,
             memory,
             voice
         )
+
     else:
+
         text_mode(
             agent,
             memory,
