@@ -56,8 +56,31 @@ class VoiceTool:
 
             command = f"""
 Add-Type -AssemblyName System.Speech
+Add-Type -AssemblyName System.Globalization
 
-$recognizer = New-Object System.Speech.Recognition.SpeechRecognitionEngine
+$recognizers = [System.Speech.Recognition.SpeechRecognitionEngine]::InstalledRecognizers()
+
+if ($recognizers.Count -eq 0) {{
+    Write-Output ""
+    exit
+}}
+
+$recognizerInfo = $recognizers | Where-Object {{
+    $_.Culture.Name -eq "en-US"
+}} | Select-Object -First 1
+
+if (-not $recognizerInfo) {{
+    $recognizerInfo = $recognizers | Where-Object {{
+        $_.Culture.TwoLetterISOLanguageName -eq "en"
+    }} | Select-Object -First 1
+}}
+
+if (-not $recognizerInfo) {{
+    $recognizerInfo = $recognizers | Select-Object -First 1
+}}
+
+$recognizer = New-Object System.Speech.Recognition.SpeechRecognitionEngine($recognizerInfo)
+
 $recognizer.SetInputToDefaultAudioDevice()
 
 $grammar = New-Object System.Speech.Recognition.DictationGrammar
@@ -97,6 +120,11 @@ $recognizer.Dispose()
 
         normalized = text.lower().strip()
 
+        normalized = normalized.replace(
+            "nexora",
+            "nexora"
+        )
+
         for wake_word in WAKE_WORDS:
 
             if wake_word.lower() in normalized:
@@ -112,6 +140,10 @@ $recognizer.Dispose()
 
             if not heard:
                 continue
+
+            print(
+                f"JARVIS شنید: {heard}"
+            )
 
             if self.detect_wake_word(heard):
 
