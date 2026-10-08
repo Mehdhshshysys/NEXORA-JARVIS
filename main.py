@@ -66,8 +66,13 @@ def text_mode(agent, memory, voice):
             continue
 
         if command.lower() in EXIT_COMMANDS:
-            print("JARVIS: در حال خاموش شدن...")
-            voice.speak("در حال خاموش شدن.")
+
+            print("JARVIS: در حال خاموش شدن.")
+
+            voice.speak(
+                "در حال خاموش شدن."
+            )
+
             break
 
         memory.remember(
@@ -75,11 +80,17 @@ def text_mode(agent, memory, voice):
             command
         )
 
-        result = agent.execute(command)
+        result = agent.execute(
+            command
+        )
 
-        print("JARVIS:", result)
+        print(
+            "JARVIS:",
+            result
+        )
 
         if result != "EXIT":
+
             voice.say_response(
                 str(result)
             )
