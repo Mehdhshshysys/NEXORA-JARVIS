@@ -1,328 +1,167 @@
-const orb = document.querySelector(".orb");
-const core = document.querySelector(".core");
-const state = document.querySelector(".state");
-
-const buttons = document.querySelectorAll("button");
-
-let currentState = "idle";
-
-const states = {
-    idle: {
-        text: "آماده دریافت فرمان",
-        speed: "12s",
-        scale: "1"
-    },
-
-    listening: {
-        text: "در حال گوش دادن...",
-        speed: "4s",
-        scale: "1.08"
-    },
-
-    thinking: {
-        text: "در حال پردازش...",
-        speed: "2s",
-        scale: "1.12"
-    },
-
-    speaking: {
-        text: "NEXORA در حال پاسخ‌گویی...",
-        speed: "1.5s",
-        scale: "1.16"
-    }
+const state = {
+    mode: "idle",
+    chatOpen: false
 };
 
+const body = document.body;
 
 function setState(newState) {
+    state.mode = newState;
 
-    if (!states[newState]) {
-        return;
-    }
-
-    currentState = newState;
-
-    const config = states[newState];
-
-    state.textContent = config.text;
-
-    document.documentElement.style.setProperty(
-        "--orb-speed",
-        config.speed
+    body.classList.remove(
+        "state-idle",
+        "state-listening",
+        "state-thinking",
+        "state-speaking"
     );
 
-    core.style.transform =
-        `scale(${config.scale})`;
+    body.classList.add(`state-${newState}`);
 
-    document.body.dataset.state = newState;
+    const status = document.querySelector(".status");
 
-    console.log(
-        `NEXORA STATE: ${newState}`
-    );
+    if (!status) return;
+
+    const labels = {
+        idle: "SYSTEM READY",
+        listening: "LISTENING",
+        thinking: "THINKING",
+        speaking: "NEXORA SPEAKING"
+    };
+
+    status.textContent = labels[newState];
 }
 
 
-function listen() {
+function createChat() {
 
-    setState("listening");
+    if (state.chatOpen) return;
 
-    setTimeout(() => {
+    state.chatOpen = true;
 
-        setState("thinking");
+    const chatPanel = document.createElement("div");
 
-        setTimeout(() => {
+    chatPanel.className = "chat-panel";
 
-            setState("speaking");
-
-            setTimeout(() => {
-
-                setState("idle");
-
-            }, 2500);
-
-        }, 1800);
-
-    }, 3000);
-}
-
-
-/* =========================
-   CHAT
-========================= */
-
-function openChat() {
-
-    let chat = document.querySelector(".chat-panel");
-
-    if (chat) {
-
-        chat.classList.toggle("visible");
-
-        return;
-    }
-
-    chat = document.createElement("div");
-
-    chat.className = "chat-panel visible";
-
-    chat.innerHTML = `
+    chatPanel.innerHTML = `
         <div class="chat-header">
             <span>NEXORA CHAT</span>
-
-            <button class="chat-close">
-                ×
-            </button>
+            <button id="closeChat">×</button>
         </div>
 
-        <div class="chat-messages">
-
+        <div class="chat-messages" id="chatMessages">
             <div class="message nexora">
-                سلام. من NEXORA هستم.
+                <strong>NEXORA</strong>
+                <p>سیستم آماده است. چه دستوری دارید؟</p>
             </div>
-
-            <div class="message nexora">
-                آماده دریافت فرمان شما هستم.
-            </div>
-
         </div>
 
         <div class="chat-input-area">
-
             <input
+                id="chatInput"
                 type="text"
-                class="chat-input"
-                placeholder="پیام خود را بنویسید..."
+                placeholder="دستور خود را وارد کنید..."
                 autocomplete="off"
-            >
+            />
 
-            <button class="send-message">
-                ➤
+            <button id="sendMessage">
+                ارسال
             </button>
-
         </div>
     `;
 
-    document.body.appendChild(chat);
+    document.body.appendChild(chatPanel);
 
-    const close =
-        chat.querySelector(".chat-close");
+    document
+        .getElementById("closeChat")
+        .addEventListener("click", () => {
 
-    const input =
-        chat.querySelector(".chat-input");
+            chatPanel.remove();
+            state.chatOpen = false;
 
-    const send =
-        chat.querySelector(".send-message");
+        });
 
-    const messages =
-        chat.querySelector(".chat-messages");
+    document
+        .getElementById("sendMessage")
+        .addEventListener("click", sendMessage);
 
-
-    close.addEventListener(
-        "click",
-        () => {
-
-            chat.classList.remove("visible");
-
-        }
-    );
-
-
-    function sendMessage() {
-
-        const text =
-            input.value.trim();
-
-        if (!text) {
-            return;
-        }
-
-
-        const userMessage =
-            document.createElement("div");
-
-        userMessage.className =
-            "message user";
-
-        userMessage.textContent =
-            text;
-
-        messages.appendChild(
-            userMessage
-        );
-
-
-        input.value = "";
-
-        messages.scrollTop =
-            messages.scrollHeight;
-
-
-        setState("thinking");
-
-
-        setTimeout(() => {
-
-            const reply =
-                document.createElement("div");
-
-            reply.className =
-                "message nexora";
-
-            reply.textContent =
-                "پیام دریافت شد. اتصال به هسته اصلی NEXORA در مرحله بعد اضافه می‌شود.";
-
-            messages.appendChild(
-                reply
-            );
-
-            messages.scrollTop =
-                messages.scrollHeight;
-
-            setState("speaking");
-
-
-            setTimeout(() => {
-
-                setState("idle");
-
-            }, 1200);
-
-        }, 900);
-    }
-
-
-    send.addEventListener(
-        "click",
-        sendMessage
-    );
-
-
-    input.addEventListener(
-        "keydown",
-        (event) => {
+    document
+        .getElementById("chatInput")
+        .addEventListener("keydown", event => {
 
             if (event.key === "Enter") {
-
                 sendMessage();
-
             }
 
-        }
-    );
+        });
 
+    document
+        .getElementById("chatInput")
+        .focus();
 }
 
 
-/* =========================
-   BUTTONS
-========================= */
+function addMessage(sender, text, type) {
 
-buttons.forEach((button) => {
-
-    button.addEventListener(
-        "click",
-        () => {
-
-            const text =
-                button.textContent.trim();
-
-
-            if (text.includes("Voice")) {
-
-                listen();
-
-                return;
-            }
-
-
-            if (text.includes("Chat")) {
-
-                openChat();
-
-                return;
-            }
-
-
-            if (text.includes("Settings")) {
-
-                setState("idle");
-
-                alert(
-                    "تنظیمات NEXORA در مرحله بعد اضافه می‌شود."
-                );
-
-            }
-
-        }
+    const messages = document.getElementById(
+        "chatMessages"
     );
 
-});
+    if (!messages) return;
+
+    const message = document.createElement("div");
+
+    message.className = `message ${type}`;
+
+    message.innerHTML = `
+        <strong>${sender}</strong>
+        <p></p>
+    `;
+
+    message.querySelector("p").textContent = text;
+
+    messages.appendChild(message);
+
+    messages.scrollTop = messages.scrollHeight;
+}
 
 
-/* =========================
-   SPACE = VOICE
-========================= */
+async function sendMessage() {
 
-window.addEventListener(
-    "keydown",
-    (event) => {
+    const input = document.getElementById(
+        "chatInput"
+    );
 
-        if (
-            event.code === "Space" &&
-            event.target.tagName !== "INPUT"
-        ) {
+    if (!input) return;
 
-            event.preventDefault();
+    const command = input.value.trim();
 
-            listen();
+    if (!command) return;
 
-        }
+    addMessage(
+        "YOU",
+        command,
+        "user"
+    );
 
-    }
-);
+    input.value = "";
 
+    setState("thinking");
 
-/* =========================
-   START
-========================= */
+    try {
 
-setState("idle");
+        const response = await fetch(
+            "/api/command",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    command: command
+                })
+            }
+        );
+
+        if (!
