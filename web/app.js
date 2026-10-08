@@ -6,7 +6,9 @@ const state = {
 
 const body = document.body;
 
+
 function setState(newState) {
+
     state.mode = newState;
 
     body.classList.remove(
@@ -16,9 +18,12 @@ function setState(newState) {
         "state-speaking"
     );
 
-    body.classList.add(`state-${newState}`);
+    body.classList.add(
+        `state-${newState}`
+    );
 
-    const status = document.querySelector(".status");
+    const status =
+        document.querySelector(".status");
 
     if (!status) return;
 
@@ -29,55 +34,76 @@ function setState(newState) {
         speaking: "NEXORA SPEAKING"
     };
 
-    status.textContent = labels[newState];
+    status.textContent =
+        labels[newState];
 }
 
 
 function addMessage(sender, text, type) {
-    const messages = document.getElementById("chatMessages");
+
+    const messages =
+        document.getElementById(
+            "chatMessages"
+        );
 
     if (!messages) return;
 
-    const message = document.createElement("div");
+    const message =
+        document.createElement("div");
 
-    message.className = `message ${type}`;
+    message.className =
+        `message ${type}`;
 
     message.innerHTML = `
         <strong>${sender}</strong>
         <p></p>
     `;
 
-    message.querySelector("p").textContent = text;
+    message.querySelector("p")
+        .textContent = text;
 
     messages.appendChild(message);
 
-    messages.scrollTop = messages.scrollHeight;
+    messages.scrollTop =
+        messages.scrollHeight;
 }
 
 
 function createChat() {
+
     if (state.chatOpen) return;
 
     state.chatOpen = true;
 
-    const chatPanel = document.createElement("div");
+    const chatPanel =
+        document.createElement("div");
 
-    chatPanel.className = "chat-panel";
+    chatPanel.className =
+        "chat-panel";
 
     chatPanel.innerHTML = `
         <div class="chat-header">
             <span>NEXORA CHAT</span>
-            <button id="closeChat">×</button>
+
+            <button id="closeChat">
+                ×
+            </button>
         </div>
 
-        <div class="chat-messages" id="chatMessages">
+        <div
+            class="chat-messages"
+            id="chatMessages"
+        >
             <div class="message nexora">
                 <strong>NEXORA</strong>
-                <p>سیستم آماده است. چه دستوری دارید؟</p>
+                <p>
+                    سیستم آماده است. چه دستوری دارید؟
+                </p>
             </div>
         </div>
 
         <div class="chat-input-area">
+
             <input
                 id="chatInput"
                 type="text"
@@ -88,29 +114,46 @@ function createChat() {
             <button id="sendMessage">
                 ارسال
             </button>
+
         </div>
     `;
 
-    document.body.appendChild(chatPanel);
+    document.body.appendChild(
+        chatPanel
+    );
 
     document
         .getElementById("closeChat")
-        .addEventListener("click", () => {
-            chatPanel.remove();
-            state.chatOpen = false;
-        });
+        .addEventListener(
+            "click",
+            () => {
+
+                chatPanel.remove();
+
+                state.chatOpen = false;
+            }
+        );
 
     document
         .getElementById("sendMessage")
-        .addEventListener("click", sendMessage);
+        .addEventListener(
+            "click",
+            sendMessage
+        );
 
     document
         .getElementById("chatInput")
-        .addEventListener("keydown", event => {
-            if (event.key === "Enter") {
-                sendMessage();
+        .addEventListener(
+            "keydown",
+            event => {
+
+                if (
+                    event.key === "Enter"
+                ) {
+                    sendMessage();
+                }
             }
-        });
+        );
 
     document
         .getElementById("chatInput")
@@ -119,31 +162,38 @@ function createChat() {
 
 
 async function sendCommand(command) {
+
     if (!command) return;
 
     setState("thinking");
 
     try {
-        const response = await fetch(
-            "/api/command",
-            {
-                method: "POST",
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+        const response =
+            await fetch(
+                "/api/command",
+                {
+                    method: "POST",
 
-                body: JSON.stringify({
-                    command: command
-                })
-            }
-        );
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        command: command
+                    })
+                }
+            );
 
         if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
+            throw new Error(
+                `HTTP ${response.status}`
+            );
         }
 
-        const data = await response.json();
+        const data =
+            await response.json();
 
         const result =
             data.response ||
@@ -153,6 +203,7 @@ async function sendCommand(command) {
         setState("speaking");
 
         if (state.chatOpen) {
+
             addMessage(
                 "NEXORA",
                 result,
@@ -162,9 +213,12 @@ async function sendCommand(command) {
 
         speakText(result);
 
-        setTimeout(() => {
-            setState("idle");
-        }, 1200);
+        setTimeout(
+            () => {
+                setState("idle");
+            },
+            1200
+        );
 
     } catch (error) {
 
@@ -176,6 +230,7 @@ async function sendCommand(command) {
         setState("idle");
 
         if (state.chatOpen) {
+
             addMessage(
                 "NEXORA",
                 "اتصال به هسته NEXORA برقرار نشد.",
@@ -187,11 +242,16 @@ async function sendCommand(command) {
 
 
 async function sendMessage() {
-    const input = document.getElementById("chatInput");
+
+    const input =
+        document.getElementById(
+            "chatInput"
+        );
 
     if (!input) return;
 
-    const command = input.value.trim();
+    const command =
+        input.value.trim();
 
     if (!command) return;
 
@@ -203,18 +263,26 @@ async function sendMessage() {
 
     input.value = "";
 
-    await sendCommand(command);
+    await sendCommand(
+        command
+    );
 }
 
 
 function speakText(text) {
-    if (!("speechSynthesis" in window)) {
+
+    if (
+        !("speechSynthesis" in window)
+    ) {
         return;
     }
 
     window.speechSynthesis.cancel();
 
-    const speech = new SpeechSynthesisUtterance(text);
+    const speech =
+        new SpeechSynthesisUtterance(
+            text
+        );
 
     speech.lang = "fa-IR";
     speech.rate = 1;
@@ -229,7 +297,9 @@ function speakText(text) {
         setState("idle");
     };
 
-    window.speechSynthesis.speak(speech);
+    window.speechSynthesis.speak(
+        speech
+    );
 }
 
 
@@ -255,76 +325,112 @@ function startVoice() {
     const recognition =
         new SpeechRecognition();
 
-    recognition.lang = "fa-IR";
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
+    recognition.lang =
+        "fa-IR";
+
+    recognition.continuous =
+        false;
+
+    recognition.interimResults =
+        false;
+
+    recognition.maxAlternatives =
+        1;
 
     state.listening = true;
 
-    setState("listening");
+    setState(
+        "listening"
+    );
 
     recognition.onstart = () => {
+
         console.log(
             "NEXORA microphone: ON"
         );
     };
 
-    recognition.onresult = event => {
+    recognition.onresult =
+        event => {
 
-        const transcript =
-            event.results[0][0].transcript.trim();
+            const transcript =
+                event.results[0][0]
+                    .transcript
+                    .trim();
 
-        console.log(
-            "NEXORA heard:",
-            transcript
-        );
-
-        state.listening = false;
-
-        if (!transcript) {
-            setState("idle");
-            return;
-        }
-
-        if (state.chatOpen) {
-            addMessage(
-                "YOU",
-                transcript,
-                "user"
+            console.log(
+                "NEXORA heard:",
+                transcript
             );
-        }
 
-        sendCommand(transcript);
-    };
+            state.listening =
+                false;
 
-    recognition.onerror = event => {
+            if (!transcript) {
 
-        console.error(
-            "NEXORA VOICE ERROR:",
-            event.error
-        );
+                setState(
+                    "idle"
+                );
 
-        state.listening = false;
+                return;
+            }
 
-        setState("idle");
+            if (state.chatOpen) {
 
-        if (event.error === "not-allowed") {
+                addMessage(
+                    "YOU",
+                    transcript,
+                    "user"
+                );
+            }
 
-            alert(
-                "دسترسی میکروفون برای NEXORA مجاز نیست."
+            sendCommand(
+                transcript
             );
-        }
-    };
+        };
 
-    recognition.onend = () => {
+    recognition.onerror =
+        event => {
 
-        state.listening = false;
+            console.error(
+                "NEXORA VOICE ERROR:",
+                event.error
+            );
 
-        if (state.mode === "listening") {
-            setState("idle");
-        }
-    };
+            state.listening =
+                false;
+
+            setState(
+                "idle"
+            );
+
+            if (
+                event.error ===
+                "not-allowed"
+            ) {
+
+                alert(
+                    "دسترسی میکروفون برای NEXORA مجاز نیست."
+                );
+            }
+        };
+
+    recognition.onend =
+        () => {
+
+            state.listening =
+                false;
+
+            if (
+                state.mode ===
+                "listening"
+            ) {
+
+                setState(
+                    "idle"
+                );
+            }
+        };
 
     try {
 
@@ -337,24 +443,87 @@ function startVoice() {
             error
         );
 
-        state.listening = false;
+        state.listening =
+            false;
 
-        setState("idle");
+        setState(
+            "idle"
+        );
     }
 }
+
+
+/*
+    NEXORA KEYBOARD CONTROL
+
+    Z = Voice
+    Space = Voice
+*/
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        const active =
+            document.activeElement;
+
+        const isTyping =
+            active &&
+            (
+                active.tagName ===
+                "INPUT" ||
+
+                active.tagName ===
+                "TEXTAREA"
+            );
+
+        if (isTyping) {
+            return;
+        }
+
+        if (
+            event.key.toLowerCase() ===
+            "z"
+        ) {
+
+            event.preventDefault();
+
+            startVoice();
+
+            return;
+        }
+
+        if (
+            event.code ===
+            "Space"
+        ) {
+
+            event.preventDefault();
+
+            startVoice();
+        }
+    }
+);
 
 
 document.addEventListener(
     "DOMContentLoaded",
     () => {
 
-        setState("idle");
+        setState(
+            "idle"
+        );
 
         const chatButton =
-            document.querySelector("#chatButton");
+            document.querySelector(
+                "#chatButton"
+            );
 
         const voiceButton =
-            document.querySelector("#voiceButton");
+            document.querySelector(
+                "#voiceButton"
+            );
 
         if (chatButton) {
 
@@ -371,22 +540,5 @@ document.addEventListener(
                 startVoice
             );
         }
-
-        document.addEventListener(
-            "keydown",
-            event => {
-
-                if (
-                    event.code === "Space" &&
-                    document.activeElement.tagName !== "INPUT" &&
-                    document.activeElement.tagName !== "TEXTAREA"
-                ) {
-
-                    event.preventDefault();
-
-                    startVoice();
-                }
-            }
-        );
     }
 );
