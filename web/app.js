@@ -85,6 +85,177 @@ function listen() {
 }
 
 
+/* =========================
+   CHAT
+========================= */
+
+function openChat() {
+
+    let chat = document.querySelector(".chat-panel");
+
+    if (chat) {
+
+        chat.classList.toggle("visible");
+
+        return;
+    }
+
+    chat = document.createElement("div");
+
+    chat.className = "chat-panel visible";
+
+    chat.innerHTML = `
+        <div class="chat-header">
+            <span>NEXORA CHAT</span>
+
+            <button class="chat-close">
+                ×
+            </button>
+        </div>
+
+        <div class="chat-messages">
+
+            <div class="message nexora">
+                سلام. من NEXORA هستم.
+            </div>
+
+            <div class="message nexora">
+                آماده دریافت فرمان شما هستم.
+            </div>
+
+        </div>
+
+        <div class="chat-input-area">
+
+            <input
+                type="text"
+                class="chat-input"
+                placeholder="پیام خود را بنویسید..."
+                autocomplete="off"
+            >
+
+            <button class="send-message">
+                ➤
+            </button>
+
+        </div>
+    `;
+
+    document.body.appendChild(chat);
+
+    const close =
+        chat.querySelector(".chat-close");
+
+    const input =
+        chat.querySelector(".chat-input");
+
+    const send =
+        chat.querySelector(".send-message");
+
+    const messages =
+        chat.querySelector(".chat-messages");
+
+
+    close.addEventListener(
+        "click",
+        () => {
+
+            chat.classList.remove("visible");
+
+        }
+    );
+
+
+    function sendMessage() {
+
+        const text =
+            input.value.trim();
+
+        if (!text) {
+            return;
+        }
+
+
+        const userMessage =
+            document.createElement("div");
+
+        userMessage.className =
+            "message user";
+
+        userMessage.textContent =
+            text;
+
+        messages.appendChild(
+            userMessage
+        );
+
+
+        input.value = "";
+
+        messages.scrollTop =
+            messages.scrollHeight;
+
+
+        setState("thinking");
+
+
+        setTimeout(() => {
+
+            const reply =
+                document.createElement("div");
+
+            reply.className =
+                "message nexora";
+
+            reply.textContent =
+                "پیام دریافت شد. اتصال به هسته اصلی NEXORA در مرحله بعد اضافه می‌شود.";
+
+            messages.appendChild(
+                reply
+            );
+
+            messages.scrollTop =
+                messages.scrollHeight;
+
+            setState("speaking");
+
+
+            setTimeout(() => {
+
+                setState("idle");
+
+            }, 1200);
+
+        }, 900);
+    }
+
+
+    send.addEventListener(
+        "click",
+        sendMessage
+    );
+
+
+    input.addEventListener(
+        "keydown",
+        (event) => {
+
+            if (event.key === "Enter") {
+
+                sendMessage();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
 buttons.forEach((button) => {
 
     button.addEventListener(
@@ -94,6 +265,7 @@ buttons.forEach((button) => {
             const text =
                 button.textContent.trim();
 
+
             if (text.includes("Voice")) {
 
                 listen();
@@ -101,19 +273,21 @@ buttons.forEach((button) => {
                 return;
             }
 
+
             if (text.includes("Chat")) {
 
-                setState("thinking");
+                openChat();
 
                 return;
             }
+
 
             if (text.includes("Settings")) {
 
                 setState("idle");
 
                 alert(
-                    "NEXORA Settings در مرحله بعد اضافه می‌شود."
+                    "تنظیمات NEXORA در مرحله بعد اضافه می‌شود."
                 );
 
             }
@@ -124,11 +298,18 @@ buttons.forEach((button) => {
 });
 
 
+/* =========================
+   SPACE = VOICE
+========================= */
+
 window.addEventListener(
     "keydown",
     (event) => {
 
-        if (event.code === "Space") {
+        if (
+            event.code === "Space" &&
+            event.target.tagName !== "INPUT"
+        ) {
 
             event.preventDefault();
 
@@ -139,5 +320,9 @@ window.addEventListener(
     }
 );
 
+
+/* =========================
+   START
+========================= */
 
 setState("idle");
