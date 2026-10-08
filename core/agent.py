@@ -23,16 +23,33 @@ class Agent:
                 return "EXIT"
 
             if query:
-                return self.tool_manager.run(
+                result = self.tool_manager.run(
                     tool,
                     action,
                     query
                 )
+            else:
+                result = self.tool_manager.run(
+                    tool,
+                    action
+                )
 
-            return self.tool_manager.run(
-                tool,
-                action
-            )
+            return self.format_response(result)
 
         except Exception as error:
             return f"خطا در اجرای دستور: {error}"
+
+    def format_response(self, result):
+
+        if result is None:
+            return "عملیات انجام شد."
+
+        if isinstance(result, dict):
+            parts = []
+
+            for key, value in result.items():
+                parts.append(f"{key}: {value}")
+
+            return "، ".join(parts)
+
+        return str(result)
