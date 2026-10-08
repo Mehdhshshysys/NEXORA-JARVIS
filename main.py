@@ -67,8 +67,6 @@ def text_mode(agent, memory, voice):
 
         if command.lower() in EXIT_COMMANDS:
 
-            print("JARVIS: در حال خاموش شدن.")
-
             voice.speak(
                 "در حال خاموش شدن."
             )
@@ -107,6 +105,10 @@ def voice_mode(agent, memory, voice):
     print("JARVIS: حالت صوتی فعال است.")
     print("JARVIS: منتظر NEXORA هستم.")
 
+    voice.speak(
+        "سیستم آماده است. منتظر NEXORA هستم."
+    )
+
     while True:
 
         running = controller.run_once()
@@ -123,8 +125,6 @@ def main():
     print("================================")
 
     agent, memory, voice = build_agent()
-
-    print("JARVIS: سیستم آماده است.")
 
     if VOICE_ENABLED:
 
