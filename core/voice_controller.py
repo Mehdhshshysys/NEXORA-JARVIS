@@ -1,4 +1,5 @@
 from core.config import MAX_COMMAND_LENGTH
+from core.voice_config import NO_COMMAND_MESSAGE
 
 
 class VoiceController:
@@ -12,17 +13,23 @@ class VoiceController:
         return self.voice.wait_for_wake_word()
 
     def listen_command(self):
+
         command = self.voice.listen()
 
         if not command:
+            self.voice.speak(
+                NO_COMMAND_MESSAGE
+            )
             return None
 
         command = command.strip()
 
         if len(command) > MAX_COMMAND_LENGTH:
+
             self.voice.speak(
                 "دستور بیش از حد طولانی است."
             )
+
             return None
 
         return command
@@ -37,9 +44,9 @@ class VoiceController:
             command
         )
 
-        result = self.agent.execute(command)
-
-        return result
+        return self.agent.execute(
+            command
+        )
 
     def respond(self, result):
 
@@ -47,9 +54,11 @@ class VoiceController:
             return
 
         if result == "EXIT":
+
             self.voice.speak(
                 "در حال خاموش شدن."
             )
+
             return
 
         self.voice.say_response(
@@ -66,9 +75,6 @@ class VoiceController:
         command = self.listen_command()
 
         if not command:
-            self.voice.speak(
-                "دستوری دریافت نکردم."
-            )
             return True
 
         result = self.execute_command(
@@ -76,9 +82,15 @@ class VoiceController:
         )
 
         if result == "EXIT":
-            self.respond(result)
+
+            self.respond(
+                result
+            )
+
             return False
 
-        self.respond(result)
+        self.respond(
+            result
+        )
 
         return True
